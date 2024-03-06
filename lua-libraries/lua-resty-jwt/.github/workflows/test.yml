@@ -1,0 +1,58 @@
+name: test
+
+on:
+  push:
+    branches:
+      - "master"
+    paths:
+      - 'rockspec/**'
+
+  pull_request:
+    branches:
+      - 'master'
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Install Lua
+        uses: leafo/gh-actions-lua@v8
+
+      - name: Install Luarocks
+        uses: leafo/gh-actions-luarocks@v4
+
+      - name: update
+        shell: bash
+        run: |
+          git submodule update --init --recursive
+
+      - name: Install hmac.lua
+        shell: bash
+        run: |
+          mkdir -p third-party/lua-resty-hmac/lib/resty/
+          curl https://raw.githubusercontent.com/jkeys089/lua-resty-hmac/master/lib/resty/hmac.lua > third-party/lua-resty-hmac/lib/resty/hmac.lua
+
+      - name: Build and Test
+        run: |
+          docker run \
+            -i \
+            --rm \
+            --entrypoint=/bin/sh \
+            -v "$(pwd)":/lua-resty-jwt \
+            -w /lua-resty-jwt \
+            --name lua-resty-jwt-tests \
+            cdbattags/openresty-testsuite:latest \
+            -c 'luarocks make lua-resty-jwt-dev-0.rockspec && prove -r t'

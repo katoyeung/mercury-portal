@@ -1,0 +1,40 @@
+# Git directories and files
+.git
+.gitignore
+
+# Logs
+logs/
+nginx/logs/
+
+# Temp files
+*~
+*.tmp
+*.swp
+*.swo
+
+# Dependencies
+luarocks/
+
+# Certificates
+*.crt
+*.key
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+
+# IDE-specific files
+.idea/
+.vscode/
+*.sublime-workspace
+
+# Node modules if using with OpenResty
+node_modules/
+
+# Additional files not needed in Docker image
+tests/
+docs/
+examples/

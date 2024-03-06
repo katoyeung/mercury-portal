@@ -1,0 +1,18 @@
+[submodule "lua-libraries/lua-resty-jwt"]
+	path = lua-libraries/lua-resty-jwt
+	url = git@github.com:api7/lua-resty-jwt.git
+[submodule "lua-libraries/lua-resty-hmac"]
+	path = lua-libraries/lua-resty-hmac
+	url = https://github.com/jkeys089/lua-resty-hmac
+[submodule "lua-libraries/lua-resty-openssl"]
+	path = lua-libraries/lua-resty-openssl
+	url = git@github.com:fffonion/lua-resty-openssl.git
+[submodule "lua-libraries/lua-resty-redis"]
+	path = lua-libraries/lua-resty-redis
+	url = git@github.com:openresty/lua-resty-redis.git
+[submodule "lua-libraries/lua-resty-string"]
+	path = lua-libraries/lua-resty-string
+	url = git@github.com:openresty/lua-resty-string.git
+[submodule "lua-libraries/lua-resty-validation"]
+	path = lua-libraries/lua-resty-validation
+	url = https://github.com/bungle/lua-resty-validation.git

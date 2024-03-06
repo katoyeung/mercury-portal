@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  openresty:
+    image: openresty/openresty:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+      - ./conf.d:/etc/nginx/conf.d
+      - ./lua-scripts:/etc/nginx/lua-scripts
+      - ./lua-libraries:/etc/nginx/lua-libraries
+    environment:
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      JWT_REFRESH_TOKEN_TTL: ${JWT_REFRESH_TOKEN_TTL}
+      JWT_EXPIRE_TTL: ${JWT_EXPIRE_TTL}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: ${REDIS_PORT}
+    networks:
+      - data-node
+
+networks:
+  data-node:
+    name: data-node_data-node
+    external: true

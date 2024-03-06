@@ -1,0 +1,34 @@
+# Compiled Lua files
+*.luac
+
+# Temp files
+*~
+*.tmp
+*.swp
+*.swo
+
+# Logs
+logs/
+nginx/logs/
+
+# Dependencies
+luarocks/
+
+# Certificates (if they are not supposed to be public)
+*.crt
+*.key
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+
+# IDE-specific files
+.idea/
+.vscode/
+*.sublime-workspace
+
+# Node modules if using with OpenResty
+node_modules/
