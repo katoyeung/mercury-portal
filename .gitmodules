@@ -16,3 +16,6 @@
 [submodule "lua-libraries/lua-resty-validation"]
 	path = lua-libraries/lua-resty-validation
 	url = https://github.com/bungle/lua-resty-validation.git
+[submodule "lua-libraries/lua-resty-jit-uuid"]
+	path = lua-libraries/lua-resty-jit-uuid
+	url = git@github.com:thibaultcha/lua-resty-jit-uuid.git
