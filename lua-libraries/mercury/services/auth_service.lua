@@ -2,6 +2,7 @@ local user_repo = require "mercury.repositories.user_repository"
 local jwt = require "resty.jwt"
 local jwt_config = require "mercury.config.jwt"
 local auth_helper = require "mercury.helpers.auth_helper"
+local token_repo = require "mercury.repositories.user_token_repository"
 
 local _M = {}
 
@@ -121,6 +122,16 @@ function _M.get_user_by_id(user_id)
         return nil, "Failed to find user: " .. (err or "unknown error")
     end
     return user, nil
+end
+
+function _M.verify_token(token)
+    local exists, err = token_repo.exists(token)
+
+    if not exists or err then
+        return false, err or "Invalid token"
+    end
+
+    return true, nil
 end
 
 return _M

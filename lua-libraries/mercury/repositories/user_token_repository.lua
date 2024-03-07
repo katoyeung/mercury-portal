@@ -1,15 +1,11 @@
 local redis_connector = require "mercury.connectors.redis_connector"
-local token_generator = require "mercury.utils.token_generator"
 local uuid = require "resty.jit-uuid"
 
 uuid.seed()
 
-local _M = {}
+local token_cache = ngx.shared.my_tokens
 
--- Generate a unique token identifier
-local function generate_token_id()
-    return uuid()
-end
+local _M = {}
 
 function _M.find_all(user_id)
     return redis_connector.execute(function(red)
@@ -65,7 +61,7 @@ function _M.find(user_id, id)
 end
 
 function _M.create(user_id, name, token)
-    local token_id = generate_token_id()
+    local token_id = uuid()
     local token_key = "tokens:" .. token_id
     local created_at = ngx.now()
 
@@ -83,6 +79,11 @@ function _M.create(user_id, name, token)
         end
 
         local _, err = red:sadd("user_tokens:" .. user_id, token_id)
+        if err then
+            return nil, "Failed to index token for user: " .. err
+        end
+
+        local _, err = red:hset("global_token_map", token, token_id)
         if err then
             return nil, "Failed to index token for user: " .. err
         end
@@ -115,19 +116,56 @@ end
 
 function _M.delete(user_id, id)
     return redis_connector.execute(function(red)
+        -- Step 1: Remove the token ID from the user's set of tokens
         local ok, err = red:srem("user_tokens:" .. user_id, id)
         if not ok then
-            return nil, "Failed to remove token id from user set: " .. err
+            return nil, "Failed to remove token ID from user set: " .. err
         end
 
-        local token_key = "tokens:" .. id
-        local ok, err = red:del(token_key)
+        -- Fetch the token value using the token ID
+        local token_value, err = red:hget("tokens:" .. id, "token")
+        if not token_value or token_value == ngx.null then
+            ngx.log(ngx.ERR, "Failed to fetch token value for deletion: ", err)
+            -- Proceed with deletion even if token value cannot be fetched, to ensure cleanup
+        end
+
+        -- Step 2: Delete the token data from Redis
+        local ok, err = red:del("tokens:" .. id)
         if not ok then
             return nil, "Failed to delete token data: " .. err
         end
 
+        -- Step 3: Remove the entry from the global token map (if the token value was fetched successfully)
+        if token_value then
+            local ok, err = red:hdel("global_token_map", token_value)
+            if not ok then
+                ngx.log(ngx.ERR, "Failed to delete token from global token map: ", err)
+            end
+
+            -- Also, remove the token from the Nginx shared dictionary cache
+            token_cache:delete(token_value)
+        end
+
         return true, nil
     end)
+end
+
+function _M.exists(token)
+    local exists = token_cache:get(token)
+    if exists then
+        return true, nil
+    else
+        -- Token not in cache, check Redis
+        return redis_connector.execute(function(red)
+            local exists, err = red:hexists("global_token_map", token)
+            if exists == 1 then
+                token_cache:set(token, true, 3600)
+                return true, nil
+            else
+                return false, "Token not exists"
+            end
+        end)
+    end
 end
 
 return _M
