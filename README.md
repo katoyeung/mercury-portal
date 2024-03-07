@@ -148,3 +148,46 @@ k6 run login_test.js
 running (1m00.0s), 000/100 VUs, 1070002 complete and 0 interrupted iterations
 default ✓ [======================================] 100 VUs  1m0s
 ```
+
+k6 run token_test.js
+
+```
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: tests/token_test.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 100 max VUs, 1m30s max duration (incl. graceful stop):
+              * default: 100 looping VUs for 1m0s (gracefulStop: 30s)
+
+
+     ✓ is status 200
+
+     checks.........................: 100.00% ✓ 2026825      ✗ 0
+     data_received..................: 983 MB  16 MB/s
+     data_sent......................: 330 MB  5.5 MB/s
+     http_req_blocked...............: avg=3.62µs  min=0s       med=0s     max=125.08ms p(90)=1µs    p(95)=1µs
+     http_req_connecting............: avg=2.06µs  min=0s       med=0s     max=57.24ms  p(90)=0s     p(95)=0s
+     http_req_duration..............: avg=2.91ms  min=93µs     med=2.44ms max=122.77ms p(90)=4.39ms p(95)=5.21ms
+       { expected_response:true }...: avg=2.91ms  min=93µs     med=2.44ms max=122.77ms p(90)=4.39ms p(95)=5.21ms
+     http_req_failed................: 0.00%   ✓ 0            ✗ 2026825
+     http_req_receiving.............: avg=15.78µs min=4µs      med=6µs    max=78.66ms  p(90)=14µs   p(95)=24µs
+     http_req_sending...............: avg=6.22µs  min=1µs      med=2µs    max=67.32ms  p(90)=4µs    p(95)=7µs
+     http_req_tls_handshaking.......: avg=0s      min=0s       med=0s     max=0s       p(90)=0s     p(95)=0s
+     http_req_waiting...............: avg=2.88ms  min=72µs     med=2.43ms max=117.24ms p(90)=4.36ms p(95)=5.18ms
+     http_reqs......................: 2026825 33777.825344/s
+     iteration_duration.............: avg=2.95ms  min=115.45µs med=2.47ms max=127.84ms p(90)=4.43ms p(95)=5.28ms
+     iterations.....................: 2026825 33777.825344/s
+     vus............................: 100     min=100        max=100
+     vus_max........................: 100     min=100        max=100
+
+
+running (1m00.0s), 000/100 VUs, 2026825 complete and 0 interrupted iterations
+default ✓ [======================================] 100 VUs  1m0s
+```

@@ -19,3 +19,6 @@
 [submodule "lua-libraries/lua-resty-jit-uuid"]
 	path = lua-libraries/lua-resty-jit-uuid
 	url = git@github.com:thibaultcha/lua-resty-jit-uuid.git
+[submodule "lua-libraries/lua-resty-http"]
+	path = lua-libraries/lua-resty-http
+	url = git@github.com:ledgetech/lua-resty-http.git
