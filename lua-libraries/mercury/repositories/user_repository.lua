@@ -46,6 +46,29 @@ function _M.register(username, password)
     end)
 end
 
+function _M.validate_credentials(username, input_password)
+    return redis_connector.execute(function(red)
+        local user_key = "users:" .. username
+
+        -- Execute hmget to fetch id and password
+        local result, err = red:hmget(user_key, "id", "password")
+
+        -- Extract user_id and password_hash from the result table
+        local user_id = result[1]
+        local password_hash = result[2]
+
+        if not user_id or user_id == ngx.null or not password_hash or password_hash == ngx.null then
+            return nil, "Invalid username or password"
+        end
+
+        if string.lower(input_password) ~= string.lower(password_hash) then
+            return nil, "Invalid username or password"
+        end
+
+        return { id = tonumber(user_id) }, nil
+    end)
+end
+
 function _M.find_by_username(username)
     return redis_connector.execute(function(red)
         -- Use the username to find the user's key
@@ -88,14 +111,11 @@ function _M.save_refresh_token(user_id, refresh_token, refresh_token_exp)
     return redis_connector.execute(function(red)
         -- Basic validation and logging
         if not user_id or not refresh_token or not refresh_token_exp then
-            ngx.log(ngx.ERR, "Invalid arguments to save_refresh_token. user_id: ", user_id, ", refresh_token_exp: ",
-                refresh_token_exp, ", refresh_token: ", refresh_token)
             return nil, "Invalid arguments"
         end
 
         local ok, err = red:setex("refresh_tokens:" .. user_id, refresh_token_exp, refresh_token)
         if not ok then
-            ngx.log(ngx.ERR, "Failed to save refresh token for user: ", err)
             return nil, "Failed to save refresh token for user: " .. err
         end
 

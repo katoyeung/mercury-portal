@@ -18,27 +18,13 @@ function _M.register(username, password)
 end
 
 function _M.authenticate(username, password)
-    -- Fetch user by username
-    local user, err = user_repo.find_by_username(username)
-    if not user then
-        return nil, "Failed to find the user: " .. (err or "unknown error")
+    local hashed_password, hash_err = auth_helper.hash(password, jwt_config.password_salt)
+    local user_id, err = user_repo.validate_credentials(username, hashed_password)
+    if not user_id then
+        return nil, err or "unknown error"
     end
 
-    local user_password = user.password
-
-    local salt = jwt_config.password_salt
-    local hashed_password, hash_err = auth_helper.hash(password, salt)
-
-    if not hashed_password then
-        ngx.log(ngx.ERR, "Failed to hash password: ", hash_err)
-        return nil, "An error occurred during password hashing"
-    end
-
-    if string.lower(hashed_password) ~= string.lower(user_password) then
-        return nil, "invalid credentials"
-    end
-
-    return user, nil
+    return user_id, nil
 end
 
 function _M.verify_refresh_token(refresh_token)
@@ -108,15 +94,25 @@ function _M.generate_jwt(user_id)
         },
     })
 
-    local refresh_token, refresh_err = _generate_jwt_refresh_token(user_id)
+    local refresh_token, refresh_err
 
-    return {
+    if jwt_config.refresh_enable then
+        refresh_token, refresh_err = _generate_jwt_refresh_token(user_id)
+        -- Handle potential error with refresh_err if necessary
+    end
+
+    local response = {
         token = token,
         token_type = "Bearer",
         expires_in = ttl,
-        refresh_token = refresh_token,
         issued_at = os.time()
     }
+
+    if refresh_token then
+        response.refresh_token = refresh_token
+    end
+
+    return response
 end
 
 function _M.get_user_by_id(user_id)

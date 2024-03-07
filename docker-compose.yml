@@ -12,8 +12,9 @@ services:
       - ./lua-libraries:/etc/nginx/lua-libraries
     environment:
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-      JWT_REFRESH_TOKEN_TTL: ${JWT_REFRESH_TOKEN_TTL}
       JWT_EXPIRE_TTL: ${JWT_EXPIRE_TTL}
+      JWT_REFRESH_ENABLE: ${JWT_REFRESH_ENABLE}
+      JWT_REFRESH_TOKEN_TTL: ${JWT_REFRESH_TOKEN_TTL}
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_PORT: ${REDIS_PORT}

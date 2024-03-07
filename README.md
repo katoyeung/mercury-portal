@@ -110,7 +110,6 @@ default ✓ [======================================] 100 VUs  1m0s
 k6 run login_test.js
 
 ```
-
           /\      |‾‾| /‾‾/   /‾‾/
      /\  /  \     |  |/  /   /  /
     /  \/    \    |     (   /   ‾‾\
@@ -118,7 +117,7 @@ k6 run login_test.js
   / __________ \  |__| \__\ \_____/ .io
 
      execution: local
-        script: login_test.js
+        script: tests/login_test.js
         output: -
 
      scenarios: (100.00%) 1 scenario, 100 max VUs, 1m30s max duration (incl. graceful stop):
@@ -127,25 +126,25 @@ k6 run login_test.js
 
      ✓ is status 200
 
-     checks.........................: 100.00% ✓ 933721       ✗ 0
-     data_received..................: 836 MB  14 MB/s
-     data_sent......................: 163 MB  2.7 MB/s
-     http_req_blocked...............: avg=2.65µs  min=0s    med=0s     max=20.31ms  p(90)=1µs     p(95)=2µs
-     http_req_connecting............: avg=1.74µs  min=0s    med=0s     max=20.3ms   p(90)=0s      p(95)=0s
-     http_req_duration..............: avg=6.39ms  min=314µs med=5.55ms max=128.01ms p(90)=9.99ms  p(95)=12.44ms
-       { expected_response:true }...: avg=6.39ms  min=314µs med=5.55ms max=128.01ms p(90)=9.99ms  p(95)=12.44ms
-     http_req_failed................: 0.00%   ✓ 0            ✗ 933721
-     http_req_receiving.............: avg=12.75µs min=4µs   med=8µs    max=14.11ms  p(90)=23µs    p(95)=30µs
-     http_req_sending...............: avg=3.67µs  min=1µs   med=2µs    max=6.3ms    p(90)=7µs     p(95)=9µs
-     http_req_tls_handshaking.......: avg=0s      min=0s    med=0s     max=0s       p(90)=0s      p(95)=0s
-     http_req_waiting...............: avg=6.37ms  min=305µs med=5.53ms max=127.98ms p(90)=9.97ms  p(95)=12.42ms
-     http_reqs......................: 933721  15560.399163/s
-     iteration_duration.............: avg=6.42ms  min=331µs med=5.58ms max=128.06ms p(90)=10.03ms p(95)=12.47ms
-     iterations.....................: 933721  15560.399163/s
+     checks.........................: 100.00% ✓ 1070002      ✗ 0
+     data_received..................: 812 MB  14 MB/s
+     data_sent......................: 186 MB  3.1 MB/s
+     http_req_blocked...............: avg=2.55µs  min=0s       med=0s     max=18.84ms  p(90)=1µs    p(95)=2µs
+     http_req_connecting............: avg=1.66µs  min=0s       med=0s     max=18.82ms  p(90)=0s     p(95)=0s
+     http_req_duration..............: avg=5.57ms  min=193µs    med=4.74ms max=150.04ms p(90)=8.73ms p(95)=10.84ms
+       { expected_response:true }...: avg=5.57ms  min=193µs    med=4.74ms max=150.04ms p(90)=8.73ms p(95)=10.84ms
+     http_req_failed................: 0.00%   ✓ 0            ✗ 1070002
+     http_req_receiving.............: avg=12.48µs min=4µs      med=8µs    max=43.37ms  p(90)=17µs   p(95)=28µs
+     http_req_sending...............: avg=3.81µs  min=1µs      med=2µs    max=13.8ms   p(90)=6µs    p(95)=9µs
+     http_req_tls_handshaking.......: avg=0s      min=0s       med=0s     max=0s       p(90)=0s     p(95)=0s
+     http_req_waiting...............: avg=5.55ms  min=185µs    med=4.72ms max=146.84ms p(90)=8.71ms p(95)=10.81ms
+     http_reqs......................: 1070002 17832.344873/s
+     iteration_duration.............: avg=5.6ms   min=222.41µs med=4.77ms max=168.08ms p(90)=8.76ms p(95)=10.87ms
+     iterations.....................: 1070002 17832.344873/s
      vus............................: 100     min=100        max=100
      vus_max........................: 100     min=100        max=100
 
 
-running (1m00.0s), 000/100 VUs, 933721 complete and 0 interrupted iterations
+running (1m00.0s), 000/100 VUs, 1070002 complete and 0 interrupted iterations
 default ✓ [======================================] 100 VUs  1m0s
 ```

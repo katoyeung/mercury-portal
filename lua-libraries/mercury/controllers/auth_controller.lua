@@ -11,8 +11,8 @@ function _M.login()
     local password    = request.get("password")
 
     local result, err = auth_service.authenticate(username, password)
-    if result and result.id then
-        result, err = auth_service.generate_jwt(result.id)
+    if result then
+        result, err = auth_service.generate_jwt(result)
     end
 
     response().json(result, err)
