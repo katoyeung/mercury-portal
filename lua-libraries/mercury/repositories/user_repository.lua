@@ -2,10 +2,6 @@ local redis_connector = require "mercury.connectors.redis_connector"
 
 local _M = {}
 
-function _M:new()
-    return setmetatable({}, { __index = self })
-end
-
 function _M.register(username, password)
     return redis_connector.execute(function(red)
         local user_key = "users:" .. username
@@ -65,7 +61,7 @@ function _M.validate_credentials(username, input_password)
             return nil, "Invalid username or password"
         end
 
-        return { id = tonumber(user_id) }, nil
+        return tonumber(user_id), nil
     end)
 end
 

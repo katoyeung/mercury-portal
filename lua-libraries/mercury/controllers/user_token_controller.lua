@@ -9,7 +9,7 @@ local _M = {}
 
 function _M.index()
     local user_id = auth.id()
-    local result, err = token_service:find_all_tokens(user_id)
+    local result, err = token_service.find_all_tokens(user_id)
     if result then
         local resource = token_resource:new(result)
         result, err = resource:transform()
@@ -46,7 +46,7 @@ function _M.store()
         end
     end
 
-    local token, err = token_service:create_token(user_id, name)
+    local token, err = token_service.create_token(user_id, name)
 
     response().json(token, err)
 end
@@ -55,7 +55,7 @@ function _M.update()
     local user_id = auth.id()
     local id = request.get("id")
     local data = request.get_body()
-    local token, err = token_service:update_token(user_id, id, data)
+    local token, err = token_service.update_token(user_id, id, data)
 
     response().json(token, err)
 end
@@ -63,7 +63,7 @@ end
 function _M.show()
     local user_id = auth.id()
     local id = request.get("id")
-    local token, err = token_service:show_token(user_id, id)
+    local token, err = token_service.show_token(user_id, id)
 
     response().json(token, err)
 end
@@ -71,7 +71,7 @@ end
 function _M.delete()
     local user_id = auth.id()
     local id = request.get("id")
-    local token, err = token_service:delete_token(user_id, id)
+    local token, err = token_service.delete_token(user_id, id)
 
     response().json(token, err)
 end

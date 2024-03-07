@@ -3,16 +3,12 @@ local token_generator = require "mercury.utils.token_generator"
 
 local _M = {}
 
-function _M:new()
-    return setmetatable({}, { __index = self })
-end
-
 -- Generate a unique token identifier
 local function generate_token_id(user_id)
     return "token:" .. user_id .. ":" .. token_generator.generate_secure_token(8)
 end
 
-function _M:find_all(user_id)
+function _M.find_all(user_id)
     return redis_connector.execute(function(red)
         local token_ids, err = red:smembers("user_tokens:" .. user_id)
         if err then
@@ -38,7 +34,7 @@ function _M:find_all(user_id)
     end)
 end
 
-function _M:find(user_id, id)
+function _M.find(user_id, id)
     return redis_connector.execute(function(red)
         local is_member, err = red:sismember("user_tokens:" .. user_id, id)
         if err then
@@ -63,16 +59,15 @@ function _M:find(user_id, id)
     end)
 end
 
-function _M:create(user_id, name)
+function _M.create(user_id, name, token)
     local token_id = generate_token_id(user_id)
-    local token_value = token_generator.generate_secure_token(32)
     local created_at = ngx.now()
 
     return redis_connector.execute(function(red)
         -- Use a Redis hash to store the token data
         local ok, err = red:hmset(token_id, {
             name = name,
-            token = token_value,
+            token = token,
             created_at = created_at,
             last_used_at = created_at -- Initially, last_used_at is the creation time
         })
@@ -87,11 +82,11 @@ function _M:create(user_id, name)
             return nil, "Failed to index token for user: " .. err
         end
 
-        return { token_id = token_id, token = token_value, created_at = created_at }, nil
+        return { token_id = token_id, token = token, created_at = created_at }, nil
     end)
 end
 
-function _M:update(user_id, id, data)
+function _M.update(user_id, id, data)
     return redis_connector.execute(function(red)
         -- Check if the token ID exists in the user's set of tokens
         local is_member, err = red:sismember("user_tokens:" .. user_id, id)
@@ -114,7 +109,7 @@ function _M:update(user_id, id, data)
     end)
 end
 
-function _M:delete(user_id, id)
+function _M.delete(user_id, id)
     return redis_connector.execute(function(red)
         -- Remove the token ID from the user's set of tokens
         local ok, err = red:srem("user_tokens:" .. user_id, id)
