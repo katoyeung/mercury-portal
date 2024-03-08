@@ -32,3 +32,4 @@ Thumbs.db
 
 # Node modules if using with OpenResty
 node_modules/
+data/

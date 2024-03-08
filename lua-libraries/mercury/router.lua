@@ -8,17 +8,17 @@ local _M = {}
 
 _M.route_table = {
     -- { ['method'] = "GET",    ['middleware'] = {},                          ["path"] = "/app/",             ['handle'] = route_service.proxy_pass("http://app:8080/") },
-    { ['method'] = "GET",    ['middleware'] = { authenticate.verify_token }, ["path"] = "/",                 ['handle'] = page_controller.index },
-    { ['method'] = "POST",   ['middleware'] = {},                            ["path"] = "/register",         ['handle'] = auth_controller.register },
-    { ['method'] = "POST",   ['middleware'] = {},                            ["path"] = "/login",            ['handle'] = auth_controller.login },
-    { ['method'] = "POST",   ['middleware'] = {},                            ["path"] = "/refresh-token",    ['handle'] = auth_controller.refresh_token },
-    { ['method'] = "GET",    ['middleware'] = { authenticate.verify_jwt },   ["path"] = "/me",               ['handle'] = auth_controller.me },
-    { ['method'] = "POST",   ['middleware'] = { authenticate.verify_jwt },   ["path"] = "/user-tokens",      ['handle'] = user_token_controller.store },
-    { ['method'] = "GET",    ['middleware'] = { authenticate.verify_jwt },   ["path"] = "/user-tokens",      ['handle'] = user_token_controller.index },
-    { ['method'] = "POST",   ['middleware'] = { authenticate.verify_jwt },   ["path"] = "/user-tokens",      ['handle'] = user_token_controller.store },
-    { ['method'] = "GET",    ['middleware'] = { authenticate.verify_jwt },   ["path"] = "/user-tokens/{id}", ['handle'] = user_token_controller.show },
-    { ['method'] = "PATCH",  ['middleware'] = { authenticate.verify_jwt },   ["path"] = "/user-tokens/{id}", ['handle'] = user_token_controller.update },
-    { ['method'] = "DELETE", ['middleware'] = { authenticate.verify_jwt },   ["path"] = "/user-tokens/{id}", ['handle'] = user_token_controller.delete },
+    { ['method'] = "GET",    ['middleware'] = {},                          ["path"] = "/",                 ['handle'] = page_controller.index },
+    { ['method'] = "POST",   ['middleware'] = {},                          ["path"] = "/register",         ['handle'] = auth_controller.register },
+    { ['method'] = "POST",   ['middleware'] = {},                          ["path"] = "/login",            ['handle'] = auth_controller.login },
+    { ['method'] = "POST",   ['middleware'] = {},                          ["path"] = "/refresh-token",    ['handle'] = auth_controller.refresh_token },
+    { ['method'] = "GET",    ['middleware'] = { authenticate.verify_jwt }, ["path"] = "/me",               ['handle'] = auth_controller.me },
+    { ['method'] = "POST",   ['middleware'] = { authenticate.verify_jwt }, ["path"] = "/user-tokens",      ['handle'] = user_token_controller.store },
+    { ['method'] = "GET",    ['middleware'] = { authenticate.verify_jwt }, ["path"] = "/user-tokens",      ['handle'] = user_token_controller.index },
+    { ['method'] = "POST",   ['middleware'] = { authenticate.verify_jwt }, ["path"] = "/user-tokens",      ['handle'] = user_token_controller.store },
+    { ['method'] = "GET",    ['middleware'] = { authenticate.verify_jwt }, ["path"] = "/user-tokens/{id}", ['handle'] = user_token_controller.show },
+    { ['method'] = "PATCH",  ['middleware'] = { authenticate.verify_jwt }, ["path"] = "/user-tokens/{id}", ['handle'] = user_token_controller.update },
+    { ['method'] = "DELETE", ['middleware'] = { authenticate.verify_jwt }, ["path"] = "/user-tokens/{id}", ['handle'] = user_token_controller.delete },
 }
 
 local function preprocess_route_table(route_table)
