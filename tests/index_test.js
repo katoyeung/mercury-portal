@@ -8,7 +8,7 @@ export let options = {
 
 export default function () {
   // Perform a simple GET request to the index page
-  let res = http.get("http://localhost");
+  let res = http.get("http://localhost:3000");
 
   // Check if the response returned a status code of 200
   check(res, {

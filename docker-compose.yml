@@ -2,7 +2,10 @@ version: "3.8"
 
 services:
   openresty:
-    image: openresty/openresty:alpine
+    container_name: mercury
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "80:80"
     volumes:
@@ -11,6 +14,7 @@ services:
       - ./lua-scripts:/etc/nginx/lua-scripts
       - ./lua-libraries:/etc/nginx/lua-libraries
     environment:
+      APP_ENV: ${APP_ENV}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       JWT_EXPIRE_TTL: ${JWT_EXPIRE_TTL}
       JWT_REFRESH_ENABLE: ${JWT_REFRESH_ENABLE}
@@ -19,9 +23,84 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_PORT: ${REDIS_PORT}
     networks:
-      - data-node
+      - mercury
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./config:/etc/prometheus
+      - ./data/prometheus:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/etc/prometheus/console_libraries"
+      - "--web.console.templates=/etc/prometheus/consoles"
+      - "--storage.tsdb.retention.time=24h"
+      - "--web.enable-lifecycle"
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    labels:
+      org.label-schema.group: "monitoring"
+    depends_on:
+      - openresty
+    networks:
+      - mercury
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: monitoring_grafana
+    restart: unless-stopped
+    links:
+      - prometheus
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "9091:3000"
+    networks:
+      - mercury
+
+  manticore:
+    container_name: manticore
+    image: manticoresearch/manticore
+    environment:
+      - EXTRA=1
+      - TELEMETRY=0
+    restart: always
+    ports:
+      - 9306:9306
+      - 9308:9308
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65535
+        hard: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./data/manticore:/var/lib/manticore
+    #      - ./manticore.conf:/etc/manticoresearch/manticore.conf # uncomment if you use a custom config
+    networks:
+      - mercury
+
+  redis:
+    image: redis/redis-stack-server:latest
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - mercury
 
 networks:
-  data-node:
-    name: data-node_data-node
-    external: true
+  mercury:

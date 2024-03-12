@@ -30,5 +30,12 @@ RUN apk add --no-cache pcre openssl zlib
 # Expose ports if needed
 EXPOSE 80 443
 
-# Command to run OpenResty
-CMD ["/usr/local/openresty/bin/openresty", "-g", "daemon off;"]
+# Copy the scripts into the container
+COPY ./setup-script.sh /usr/local/bin/setup-script.sh
+COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
+
+# Make the scripts executable
+RUN chmod +x /usr/local/bin/setup-script.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
